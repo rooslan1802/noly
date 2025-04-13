@@ -26,9 +26,6 @@
     "win": {
       "target": "nsis",
       "icon": "assets/icons/icon.ico"
-    },
-    "publish": {
-      "provider": "github"
     }
   },
   "dependencies": {
