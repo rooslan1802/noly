@@ -1,42 +1,36 @@
 {
-  "name": "damubala-app",
+  "name": "noly-app",
   "version": "1.0.0",
-  "description": "Автоматическая запись детей по кружкам",
-  "main": "public/electron.js",
+  "description": "Автоматизация записи детей в кружки (Noly)",
+  "main": "electron.js",
   "homepage": "./",
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
     "electron": "electron .",
-    "dist": "npm run build && electron-builder --win",
+    "build": "react-scripts build",
+    "dist": "npm run build && electron-builder --mac",
     "postinstall": "electron-builder install-app-deps",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "build": {
-    "appId": "com.damubala.app",
-    "productName": "Finty",
+    "appId": "com.noly.app",
+    "productName": "Noly",
     "directories": {
       "buildResources": "assets"
     },
-    "mac": {
-      "target": "dmg",
-      "icon": "assets/icons/icon.icns"
-    },
-    "win": {
-      "target": "nsis",
-      "icon": "assets/icons/icon.ico"
-    }
+  "mac": {
+    "icon": "assets/icons/icon.icns"
+  },
+  "win": {
+    "icon": "assets/icons/icon_optimized.ico"
+  }
+
   },
   "dependencies": {
-    "framer-motion": "^12.6.5",
-    "jspdf": "^2.5.1",
-    "jspdf-autotable": "^3.5.25",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.5.0",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^4.2.4",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

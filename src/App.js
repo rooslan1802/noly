@@ -78,11 +78,11 @@ function App() {
     setEndTime(null);
     let successList = [];
     let tempLog = [];
-    let successfulCount = 0;
 
     for (let i = 0; i < data.length; i++) {
       const row = data[i];
-      const { login, password, childId, classId, courseId, childName } = row;
+      const { login, password, childId, classId, courseId } = row;
+      const childName = row["ФИО ребенка"]; 
       const token = await getToken(login, password);
       const time = getTime();
       let status = "";
@@ -92,7 +92,6 @@ function App() {
         if (success) {
           successList.push({ childName, login, time });
           status = "Успешно";
-          successfulCount++;
         } else {
           status = "Ошибка записи";
         }
@@ -101,11 +100,9 @@ function App() {
       }
 
       tempLog.push({ childId, classId, courseId, childName, login, status, time });
-      setLog(tempLog); // обновляем журнал записей
-      setProgress(((i + 1) / data.length) * 100); // обновляем прогресс
-
-      // обновляем количество записанных детей
-      setSuccessfulRecords(successList);
+      setLog([...tempLog]);
+      setProgress(((i + 1) / data.length) * 100);
+      setSuccessfulRecords([...successList]);
     }
 
     setEndTime(getTime());
@@ -120,10 +117,28 @@ function App() {
     }
   };
 
+  const downloadReport = () => {
+    const wb = XLSX.utils.book_new();
+    const wsData = [
+      ["ФИО ребенка", "Логин", "childId", "classId", "courseId", "Статус", "Время"],
+      ...log.map((entry) => [
+        entry.childName,
+        entry.login,
+        entry.childId,
+        entry.classId,
+        entry.courseId,
+        entry.status,
+        entry.time,
+      ]),
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    XLSX.utils.book_append_sheet(wb, ws, "Отчет");
+    XLSX.writeFile(wb, "report.xlsx");
+  };
+
   return (
     <div style={{ backgroundColor: "#0b1a2e", color: "#ffffff", minHeight: "100vh", fontFamily: "Arial, sans-serif", padding: "1rem" }}>
       <div ref={topRef}></div>
-
 
       <div style={{ textAlign: "center", marginBottom: "1rem" }}>
         <progress value={progress} max="100" style={{ width: "60%", height: "20px" }} />
@@ -179,6 +194,9 @@ function App() {
           <p>⏱ Конец записи: {endTime}</p>
           <p>✅ Успешно записано: {successfulRecords.length}</p>
           <p>❌ Не удалось записать: {log.length - successfulRecords.length}</p>
+          <button onClick={downloadReport} style={{ marginBottom: "1rem", padding: "0.5rem 1rem", backgroundColor: "#28a745", color: "#fff", border: "none", cursor: "pointer" }}>
+            📥 Скачать отчет в Excel
+          </button>
           <ul>
             {log.filter((entry) => entry.status !== "Успешно").map((entry, index) => (
               <li key={index} style={{ color: "#ff4d4d" }}>
